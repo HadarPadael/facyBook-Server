@@ -1,0 +1,32 @@
+{
+  "name": "facyBook-Server",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "This is a RESTful API server implementation in Node.js, its connecting with a Mongodb to provide CRUD operations to the facyBook web-app",
+  "main": "app.js",
+  "scripts": {
+    "test": "cross-env NODE_ENV=test node app.js",
+    "start": "cross-env NODE_ENV=local node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HadarPadael/facyBook-Server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HadarPadael/facyBook-Server/issues"
+  },
+  "homepage": "https://github.com/HadarPadael/facyBook-Server#readme",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "custom-env": "^2.0.6",
+    "express": "^4.21.2",
+    "mongoose": "^8.10.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
