@@ -25,11 +25,15 @@ const User = new Schema(
       unique: true,
     },
 
-    // Array of user IDs representing friends
-    friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    nickname: {
+      type: String,
+      required: true,
+      unique: true,
+    },
 
-    // Array of user IDs representing friend requests
-    friendRequests: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    friends: [{ type: String, ref: "User" }],
+    
+    friendRequests: [{ type: String, ref: "User" }],
   },
 
   { id: false }

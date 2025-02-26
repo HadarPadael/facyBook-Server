@@ -4,7 +4,7 @@ var app = express();
 //middleware
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 //middleware
 const cors = require("cors");
@@ -24,13 +24,13 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 // where the React app sits
 app.use(express.static("public"));
 
-// const posts = require("./routes/post");
-// app.use("/api/posts", posts);
+const posts = require("./routes/post");
+app.use("/api/posts", posts);
 
 const users = require("./routes/user");
 app.use("/api/users", users);
 
-// const token = require("./routes/token");
-// app.use("/api/tokens", token);
+const token = require("./routes/token");
+app.use("/api/tokens", token);
 
 app.listen(process.env.PORT);

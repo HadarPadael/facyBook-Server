@@ -1,13 +1,19 @@
-// import { getFeedPosts, updatePost, deletePost } from "../controllers/post.js";
+const postController = require("../controllers/post");
 
-// import express from "express";
-// const router = express.Router();
+const express = require("express");
+var router = express.Router();
 
-// router.route("/").get(getFeedPosts);
+router.route("/").get(postController.getFeedPosts); //
 
-// router
-//   .route("/:id/posts/:pid")
-//   .patch(updatePost)
-//   .delete(deletePost);
+router
+  .route("/:id/posts/:pid")
+  .delete(postController.deletePost);
 
-// module.exports = router ;
+router.route("/:id/posts/:pid/likes").patch(postController.updateLikes);
+
+router
+  .route("/:id/posts/:pid/comments")
+  .get(postController.getPostsComments)
+  .post(postController.addComment)
+
+module.exports = router;
