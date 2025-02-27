@@ -15,7 +15,6 @@ async function createUser(req, res) {
     );
     // Respond with the newly created user object
     res.status(201).json(newUser);
-
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(409).json({ message: "Internal Server Error" });
@@ -24,14 +23,13 @@ async function createUser(req, res) {
 
 async function getUserDetails(req, res) {
   try {
-    const nickname = req.params.id; 
+    const nickname = req.params.id;
     const userDetails = await userService.getUserDetails(nickname);
 
     if (!userDetails) {
       return res.status(404).json({ message: "User not found" });
     }
     res.status(200).json(userDetails);
-
   } catch (error) {
     console.error("Error getting user details:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -119,13 +117,11 @@ async function getFriends(req, res) {
       currentUser !== username &&
       !(await userService.areFriends(currentUser, username))
     ) {
-      return res
-        .status(403)
-        .json({
-          errors: [
-            "Unauthorized: You are not authorized to view this user's friends",
-          ],
-        });
+      return res.status(403).json({
+        errors: [
+          "Unauthorized: You are not authorized to view this user's friends",
+        ],
+      });
     }
 
     // Retrieve the user's friends list
@@ -167,6 +163,20 @@ async function cancelRequest(req, res) {
   }
 }
 
+async function denyRequest(req, res) {
+  try {
+    const requesterUser = await req.params.id;
+    const currentUser = await tokenChecker(req);
+
+    await userService.denyRequest(currentUser, requesterUser);
+
+    res.status(200).json({ message: "Friend request denied successfully" });
+  } catch (error) {
+    console.error("Error denying friend request:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 async function acceptFriendship(req, res) {
   try {
     const currentUser = await tokenChecker(req);
@@ -177,13 +187,11 @@ async function acceptFriendship(req, res) {
       await userService.acceptFriendship(senderUser, receiverUser);
       res.status(200).json({ message: "Friendship accepted successfully" });
     } else {
-      res
-        .status(403)
-        .json({
-          errors: [
-            "Unauthorized: You are not allowed to accept this friendship request",
-          ],
-        });
+      res.status(403).json({
+        errors: [
+          "Unauthorized: You are not allowed to accept this friendship request",
+        ],
+      });
     }
   } catch (error) {
     console.error("Error accepting friendship:", error);
@@ -204,13 +212,9 @@ async function deleteFriend(req, res) {
       await userService.deleteFriend(currentUser, friendToRemove);
       res.status(200).json({ message: "Friend removed successfully" });
     } else {
-      res
-        .status(403)
-        .json({
-          errors: [
-            "Unauthorized: You are not allowed to remove this friendship",
-          ],
-        });
+      res.status(403).json({
+        errors: ["Unauthorized: You are not allowed to remove this friendship"],
+      });
     }
   } catch (error) {
     console.error("Error removing friend:", error);
@@ -228,4 +232,5 @@ module.exports = {
   acceptFriendship,
   deleteFriend,
   cancelRequest,
+  denyRequest,
 };

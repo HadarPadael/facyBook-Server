@@ -1,4 +1,3 @@
-
 const User = require("../models/user.js");
 const Post = require("../models/post.js");
 const { get } = require("mongoose");
@@ -205,25 +204,34 @@ async function cancelRequest(currentUser, requestedUser) {
   }
 }
 
+async function denyRequest(currentUser, requesterUser) {
+  try {
+    await User.updateOne(
+      { nickname: currentUser },
+      { $pull: { friendRequests: requesterUser } }
+    );
+  } catch (error) {
+    console.error("Error denying friend request:", error);
+    throw new Error("Error denying friend request");
+  }
+}
+
 async function acceptFriendship(senderUser, receiverUser) {
   try {
-    // Find the user document corresponding to the receiverUser
-    const receiver = await User.findOne({ nickname: receiverUser });
-    const sender = await User.findOne({ nickname: senderUser });
-
-    if (!receiver) {
-      throw new Error("Receiver user not found");
-    }
-
-    //update both sides friends lists
+    //update both sides friends lists, and the recivers requests list
     await User.updateOne(
       { nickname: senderUser },
-      { $addToSet: { friends: receiver } }
+      { $addToSet: { friends: receiverUser } }
     );
 
     await User.updateOne(
       { nickname: receiverUser },
-      { $pull: { friendRequests: sender } }
+      { $addToSet: { friends: senderUser } }
+    );
+
+    await User.updateOne(
+      { nickname: receiverUser },
+      { $pull: { friendRequests: senderUser } }
     );
   } catch (error) {
     console.error("Error accepting friendship:", error);
@@ -258,4 +266,5 @@ module.exports = {
   acceptFriendship,
   deleteFriend,
   cancelRequest,
+  denyRequest,
 };
