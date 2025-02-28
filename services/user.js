@@ -7,11 +7,11 @@ async function areFriends(nickname1, nickname2) {
   const user2 = await User.findOne({ nickname: nickname2 });
 
   if (!user1 || !user2) {
-    return false; // One of the users doesn't exist
+    return false; 
   }
 
   // return true (friends) / false (not friends)
-  return user1.friends.includes(nickname2) && user2.friends.includes(nickname1);
+  return (user1.friends.includes(nickname2) && user2.friends.includes(nickname1)) || (nickname1 === nickname2);
 }
 
 async function getNewId() {
@@ -87,29 +87,14 @@ async function getUserDetails(nickname) {
   }
 }
 
-async function getFriendPosts(currentUserUsername, friendUsername) {
+async function getFriendPosts(nickname) {
   try {
-    // Find the friend user
-    const friend = await User.findOne({ username: friendUsername });
-
-    // If friend not found, return an empty array
-    if (!friend) {
-      return [];
-    }
-
-    // Check if currentUser is in friend's friend list
-    if (!friend.friends.includes(currentUserUsername)) {
-      return []; // currentUser is not a friend of friendUsername
-    }
-
-    // Get friend's posts sorted by date
-    const friendPosts = await Post.find({ publisher: friendUsername }).sort({
-      date: -1,
+    // Get friend's posts, sorted by date
+    const friendPosts = await Post.find({ nickname: nickname }).sort({
+      date: 1,
     });
-
     return friendPosts;
   } catch (error) {
-    // Handle any errors that occur during fetching friend posts
     console.error("Error fetching friend posts:", error);
     throw new Error("Error fetching friend posts");
   }
@@ -143,7 +128,6 @@ async function createPost(nickname, { content, compressedPic }) {
       throw new Error(`User with username '${nickname}' not found`);
     }
     const postID = await getNewId();
-    // Create the new post
     const newPost = new Post({
       nickname,
       content,
@@ -158,25 +142,6 @@ async function createPost(nickname, { content, compressedPic }) {
   } catch (error) {
     console.error("Error creating post:", error);
     throw new Error("Error creating post");
-  }
-}
-
-async function getFriends(username) {
-  try {
-    // Find the user by username and select the friends field
-    const user = await User.findOne({ username }).select("friends");
-
-    // If user is not found or user has no friends, return an empty array
-    if (!user || !user.friends) {
-      return [];
-    }
-
-    // Return the friends list
-    return user.friends;
-  } catch (error) {
-    // Handle any errors that occur during friend retrieval
-    console.error("Error getting friends:", error);
-    throw new Error("Error getting friends");
   }
 }
 
@@ -239,20 +204,6 @@ async function acceptFriendship(senderUser, receiverUser) {
   }
 }
 
-async function deleteFriend(currentUser, friendToRemove) {
-  try {
-    // Update the current user's friend list to remove the friend to remove
-    await User.updateOne(
-      { username: currentUser },
-      { $pull: { friends: friendToRemove } }
-    );
-  } catch (error) {
-    // Handle any errors that occur during friend removal
-    console.error("Error removing friend:", error);
-    throw new Error("Error removing friend");
-  }
-}
-
 module.exports = {
   createUser,
   checkUserExistence,
@@ -261,10 +212,8 @@ module.exports = {
   areFriends,
   getFriendPosts,
   createPost,
-  getFriends,
   askToBeFriend,
   acceptFriendship,
-  deleteFriend,
   cancelRequest,
   denyRequest,
 };
