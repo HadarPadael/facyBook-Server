@@ -58,25 +58,17 @@ const addComment = async (req, res) => {
 
 const updateLikes = async (req, res) => {
   try {
-    // Extract post ID from request parameters
-    const postId = req.params.pid;
+    const postID = req.params.pid;
+    const post = await postService.getPostById(postID);
 
-    // Retrieve the post by ID
-    const post = await postService.getPostById(postId);
-
-    // Check if the post exists
     if (!post) {
       return res.status(404).json({ errors: ["Post not found"] });
     }
 
-    // Extract text and picture from request body
     const { likes } = req.body;
-
-    // Update the post
-    const updatedPost = await postService.updateLikes(postId, { likes });
-
-    // Respond with the updated post
+    const updatedPost = await postService.updateLikes(post, { likes });
     res.status(200).json(updatedPost);
+    
   } catch (error) {
     console.error("Error updating post:", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -85,28 +77,19 @@ const updateLikes = async (req, res) => {
 
 const deletePost = async (req, res) => {
   try {
-    // Extract name from request parameters
-    const name = req.params.id;
-
-    // Extract post ID from request parameters
-    const postId = req.params.pid;
-
-    // Extract user from token
+    const nickname = req.params.id;
+    const postID = req.params.pid;
     const currentUser = await tokenChecker(req);
+    console.log(`nickname: ${nickname}, currentUser: ${currentUser} postID: ${postID}`);
 
     // Check if the current user is the publisher of the post
-    if (currentUser !== name) {
-      return res
-        .status(403)
-        .json({
-          errors: ["Unauthorized: You are not the publisher of this post"],
-        });
+    if (currentUser !== nickname) {
+      return res.status(403).json({
+        errors: ["Unauthorized: You are not the publisher of this post"],
+      });
     }
 
-    // Delete the post
-    const deletedPost = await postService.deletePost(postId);
-
-    // Respond with the deleted post
+    const deletedPost = await postService.deletePost(postID);
     console.log("post deleted successfully!");
     res.status(200).json(deletedPost);
   } catch (error) {

@@ -7,9 +7,9 @@ router.route("/").get(postController.getFeedPosts); //
 
 router
   .route("/:id/posts/:pid")
-  .delete(postController.deletePost);
+  .delete(postController.deletePost); //*
 
-router.route("/:id/posts/:pid/likes").patch(postController.updateLikes);
+router.route("/:id/posts/:pid/likes").patch(postController.updateLikes); //
 
 router
   .route("/:id/posts/:pid/comments")

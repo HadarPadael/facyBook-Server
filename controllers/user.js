@@ -42,7 +42,6 @@ async function getFriendPosts(req, res) {
     }
 
     const currentUserNickname = await tokenChecker(req);
-    console.log(`current: ${currentUserNickname}, friend: ${friendNickname}`);
     const areFriends = await userService.areFriends(
       currentUserNickname,
       friendNickname

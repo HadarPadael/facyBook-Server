@@ -14,20 +14,19 @@ const getFeedPosts = async (req) => {
 
   // Find posts from friends
   const friendPosts = await Post.find({ nickname: { $in: friends } })
-    .sort({ date: 1 })
+    .sort({ time: -1 })
     .limit(20);
 
   // Find posts from non-friends
   const nonFriendPosts = await Post.find({ nickname: { $nin: friends } })
-    .sort({ date: 1 })
+    .sort({ time: -1 })
     .limit(5);
 
   // Merge friend and non-friend posts
   const feedPosts = [...friendPosts, ...nonFriendPosts];
 
   // Sort the merged posts by date in acending order
-  feedPosts.sort((a, b) => a.time - b.time);
-
+  feedPosts.sort((a, b) => b.time - a.time);
   return feedPosts;
 };
 
@@ -95,46 +94,39 @@ const getPosts = async () => {
   return await Post.find({});
 };
 
-const getPostById = async (postId) => {
-  return await Post.findById(postId);
+const getPostById = async (postID) => {
+  return await Post.findOne({postID});
 };
 
-async function updateLikes(postId, { likes }) {
+async function updateLikes(post, { likes }) {
   try {
-    const post = await getPostById(postId);
-    if (!post) return null;
-
-    // Update the relevant members if provided
     if (likes !== undefined) {
       post.likes = likes;
+      console.log("here");
     }
-
     await post.save();
     return post;
   } catch (error) {
-    // Handle any errors that occur during post update
     console.error("Error updating post:", error);
     throw new Error("Error updating post");
   }
 }
 
-async function deletePost(postId) {
+async function deletePost(postID) {
   try {
-    // Find the post by its ID and delete it
-    const comments = await Comment.find({ postId: postId });
-
     // Iterate through the comments and delete each one
+    const comments = await Comment.find({ postID });
     for (const comment of comments) {
-      await Comment.findByIdAndDelete(comment.cid);
+      await Comment.findOneAndDelete({ commentID: comment.commentID });
     }
-    const deletedPost = await Post.findByIdAndDelete(postId);
+    //delete the post itself
+    const deletedPost = await Post.findOneAndDelete({ postID });
 
     if (!deletePost) {
       throw new NotFoundError("post not found");
     }
     return deletedPost;
   } catch (error) {
-    // Handle any errors that occur during post deletion
     console.error("Error deleting post:", error);
     throw error;
   }
