@@ -1,2 +1,31 @@
 # facyBook-Server
-This is a RESTful API server implementation in Node.js, its connecting with a Mongodb to provide CRUD operations to the facyBook web-app
+This Node.js server handles JWT authentication and asynchronous operations using Promises and MVC structure (here the view is replaced with service, due to the fact that the server returns json objects and therefore is a service). It serves as the backend for the Facybook project and manages four main models: Users, Posts, Comments, and Tokens.
+
+## Features
+- **JWT Authentication:** Secure authentication using JSON Web Tokens.
+- **Async Operations:** All operations are asynchronous, using Promises for better control flow.
+
+## Models
+- **Users:** Manages user data and operations.
+- **Posts:** Handles the creation and management of posts.
+- **Comments:**  Manages comments associated with posts.
+- **Tokens:** Stores and validates JWT tokens.
+
+## Setup and Running
+- Clone the Repository:
+```bash
+git clone https://github.com/HadarPadel/facyBook-Server.git
+cd facyBook-Server
+```
+- Install Dependencies:
+```bash
+npm install
+```
+- Start the Server:
+```bash
+node app.js
+```
+The server will start on the configured port. Ensure your frontend is set up to communicate with the backend API.
+Currently, in the public directory is the compiled code for the current React facybook-app. If after you run it you'll navigate to  http://localhost:12345 then you should be able to use the app.
+
+Feel free to contribute or open issues if you encounter any problems!
