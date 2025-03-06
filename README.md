@@ -33,6 +33,6 @@ npm install
 node app.js
 ```
 The server will start on the configured port. Ensure your frontend is set up to communicate with the backend API.
-Currently, in the public directory is the compiled code for the current React facybook-app. If after you run it you'll navigate to  http://localhost:12345 then you should be able to use the app.
+Currently, in the public directory is the compiled code for the current React facybook-app. If after you run it you'll navigate to  http://localhost:PORT then you should be able to use the app.
 
 Feel free to contribute or open issues if you encounter any problems!
