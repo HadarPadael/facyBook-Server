@@ -21,6 +21,13 @@ cd facyBook-Server
 ```bash
 npm install
 ```
+- Create a config directory with .env files:
+  CONNECTION_STRING=?
+  PORT=?
+  
+  ***notice:** the connection string should contain the mongoDB connection string as it appears in your device.
+  Make sure that you have mongoDB installed before running the server, and put the connection string in place*
+  
 - Start the Server:
 ```bash
 node app.js
