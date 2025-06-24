@@ -1,20 +1,22 @@
 const User = require("../models/user.js");
 const Post = require("../models/post.js");
-const { get } = require("mongoose");
 
 async function areFriends(nickname1, nickname2) {
   const user1 = await User.findOne({ nickname: nickname1 });
   const user2 = await User.findOne({ nickname: nickname2 });
 
   if (!user1 || !user2) {
-    return false; 
+    return false;
   }
 
   // return true (friends) / false (not friends)
-  return (user1.friends.includes(nickname2) && user2.friends.includes(nickname1)) || (nickname1 === nickname2);
+  return (
+    (user1.friends.includes(nickname2) && user2.friends.includes(nickname1)) ||
+    nickname1 === nickname2
+  );
 }
 
-async function getNewId() {
+async function getNewUserId() {
   try {
     // Fetch all users IDs
     const users = await User.find({}, { userId: 1 });
@@ -42,7 +44,7 @@ async function createUser(nickname, password, compressedPic, username) {
     }
 
     // Else: generate new user ID
-    const userId = await getNewId();
+    const userId = await getNewUserId();
 
     // Create a new user object
     const newUser = new User({
@@ -59,7 +61,7 @@ async function createUser(nickname, password, compressedPic, username) {
     const savedUser = await newUser.save();
     return savedUser;
   } catch (error) {
-    throw error;
+    throw new Error("Error creating new user. Try again later.");
   }
 }
 
@@ -100,7 +102,7 @@ async function getFriendPosts(nickname) {
   }
 }
 
-async function getNewId() {
+async function getNewPostId() {
   try {
     // Fetch all post IDs
     const posts = await Post.find({}, { postID: 1 });
@@ -127,7 +129,7 @@ async function createPost(nickname, { content, compressedPic }) {
     if (!user) {
       throw new Error(`User with username '${nickname}' not found`);
     }
-    const postID = await getNewId();
+    const postID = await getNewPostId();
     const newPost = new Post({
       nickname,
       content,
@@ -207,7 +209,8 @@ async function acceptFriendship(senderUser, receiverUser) {
 module.exports = {
   createUser,
   checkUserExistence,
-  getNewId,
+  getNewUserId,
+  getNewPostId,
   getUserDetails,
   areFriends,
   getFriendPosts,
