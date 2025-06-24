@@ -23,15 +23,6 @@ mongoose.connect(process.env.CONNECTION_STRING, {
   useUnifiedTopology: true,
 });
 
-// Serve the React build assets
-const publicPath = path.join(__dirname, "public");
-app.use(express.static(publicPath));
-
-// Fallback: for any “page” request, send back index.html
-app.get("*", (req, res) => {
-  res.sendFile(path.join(publicPath, "index.html"));
-});
-
 const posts = require("./routes/post");
 app.use("/api/posts", posts);
 
@@ -40,5 +31,14 @@ app.use("/api/users", users);
 
 const token = require("./routes/token");
 app.use("/api/tokens", token);
+
+// Serve the React build assets
+const publicPath = path.join(__dirname, "public");
+app.use(express.static(publicPath));
+
+// Fallback: for any “page” request, send back index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
 
 app.listen(process.env.PORT);
