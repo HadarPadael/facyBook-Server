@@ -21,11 +21,18 @@ cd facyBook-Server
 ```bash
 npm install
 ```
+- Create a config directory with .env files:
+  CONNECTION_STRING=?
+  PORT=?
+  
+  ***notice:** the connection string should contain the mongoDB connection string as it appears in your device.
+  Make sure that you have mongoDB installed before running the server, and put the connection string in place*
+  
 - Start the Server:
 ```bash
 node app.js
 ```
 The server will start on the configured port. Ensure your frontend is set up to communicate with the backend API.
-Currently, in the public directory is the compiled code for the current React facybook-app. If after you run it you'll navigate to  http://localhost:12345 then you should be able to use the app.
+Currently, in the public directory is the compiled code for the current React facybook-app. If after you run it you'll navigate to  http://localhost:PORT then you should be able to use the app.
 
 Feel free to contribute or open issues if you encounter any problems!
