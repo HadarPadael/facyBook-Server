@@ -1,4 +1,6 @@
 const express = require("express");
+const path = require("path");
+
 var app = express();
 
 //middleware
@@ -17,12 +19,18 @@ console.log(process.env.PORT);
 
 const mongoose = require("mongoose");
 mongoose.connect(process.env.CONNECTION_STRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-// where the React app sits
-app.use(express.static("public"));
+// Serve the React build assets
+const publicPath = path.join(__dirname, "public");
+app.use(express.static(publicPath));
+
+// Fallback: for any “page” request, send back index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
 
 const posts = require("./routes/post");
 app.use("/api/posts", posts);
