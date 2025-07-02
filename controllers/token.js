@@ -9,7 +9,6 @@ const processLogin = async (req, res) => {
     // Create token
     const token = await tokenService.createToken(userExist.nickname);
     // Save token to database
-    // TODO: check if next line needed:
     await tokenService.saveToken({ token });
     // Return the token
     res.status(200).json({ token, userExist });

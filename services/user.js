@@ -16,25 +16,6 @@ async function areFriends(nickname1, nickname2) {
   );
 }
 
-async function getNewUserId() {
-  try {
-    // Fetch all users IDs
-    const users = await User.find({}, { userId: 1 });
-
-    // If there are no users yet, assign the first ID as 1
-    if (users.length === 0) {
-      return 1;
-    }
-
-    // Else: find the maximum ID and assign a new ID by incrementing the maximum ID by 1
-    const maxId = Math.max(...users.map((user) => parseInt(user.userId, 10)));
-    return maxId + 1;
-  } catch (error) {
-    console.error("Error fetching users or calculating new ID:", error);
-    throw new Error("Error generating new ID");
-  }
-}
-
 async function createUser(nickname, password, compressedPic, username) {
   try {
     // Check if there exists a user with the given username
@@ -42,9 +23,6 @@ async function createUser(nickname, password, compressedPic, username) {
     if (userExists) {
       throw new Error("Username already exists");
     }
-
-    // Else: generate new user ID
-    const userId = await getNewUserId();
 
     // Create a new user object
     const newUser = new User({
@@ -54,13 +32,13 @@ async function createUser(nickname, password, compressedPic, username) {
       profilePic: compressedPic,
       friends: [],
       friendRequests: [],
-      userId,
     });
 
     // Save the new user to the database and return it
     const savedUser = await newUser.save();
     return savedUser;
   } catch (error) {
+    console.log(error);
     throw new Error("Error creating new user. Try again later.");
   }
 }
@@ -209,7 +187,6 @@ async function acceptFriendship(senderUser, receiverUser) {
 module.exports = {
   createUser,
   checkUserExistence,
-  getNewUserId,
   getNewPostId,
   getUserDetails,
   areFriends,
