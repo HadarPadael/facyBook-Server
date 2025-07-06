@@ -24,11 +24,6 @@ const Post = new Schema({
   profilePic: {
     type: String,
   },
-  postID: {
-    type: String,
-    required: true,
-    uniqe: true,  
-  },
 
   likes: [{ type: String, ref: "User" }],
   comments: [{ type: String, ref: "Comment" }],

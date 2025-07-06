@@ -120,8 +120,8 @@ async function deletePost(postID) {
       await Comment.findOneAndDelete({ commentID: comment.commentID });
     }
     //delete the post itself
-    const deletedPost = await Post.findOneAndDelete({ postID });
-
+    const deletedPost = await Post.findOneAndDelete({ _id: postID });
+  
     if (!deletePost) {
       throw new NotFoundError("post not found");
     }

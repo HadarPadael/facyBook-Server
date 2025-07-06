@@ -80,25 +80,6 @@ async function getFriendPosts(nickname) {
   }
 }
 
-async function getNewPostId() {
-  try {
-    // Fetch all post IDs
-    const posts = await Post.find({}, { postID: 1 });
-
-    // If there are no posts yet, assign the first ID as 1
-    if (posts.length === 0) {
-      return 1;
-    }
-
-    // Else: find the maximum ID and assign a new ID by incrementing the maximum ID by 1
-    const maxId = Math.max(...posts.map((post) => parseInt(post.postID, 10)));
-    return maxId + 1;
-  } catch (error) {
-    console.error("Error fetching posts or calculating new ID:", error);
-    throw new Error("Error generating new ID");
-  }
-}
-
 async function createPost(nickname, { content, compressedPic }) {
   try {
     const user = await User.findOne({ nickname: nickname });
@@ -107,14 +88,12 @@ async function createPost(nickname, { content, compressedPic }) {
     if (!user) {
       throw new Error(`User with username '${nickname}' not found`);
     }
-    const postID = await getNewPostId();
     const newPost = new Post({
       nickname,
       content,
       postPic: compressedPic,
       profilePic: user.profilePic,
       time: new Date(),
-      postID,
     });
 
     await newPost.save();
@@ -187,7 +166,6 @@ async function acceptFriendship(senderUser, receiverUser) {
 module.exports = {
   createUser,
   checkUserExistence,
-  getNewPostId,
   getUserDetails,
   areFriends,
   getFriendPosts,

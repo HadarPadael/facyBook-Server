@@ -80,7 +80,6 @@ const deletePost = async (req, res) => {
     const nickname = req.params.id;
     const postID = req.params.pid;
     const currentUser = await tokenChecker(req);
-    console.log(`nickname: ${nickname}, currentUser: ${currentUser} postID: ${postID}`);
 
     // Check if the current user is the publisher of the post
     if (currentUser !== nickname) {

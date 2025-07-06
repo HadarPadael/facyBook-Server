@@ -21,7 +21,7 @@ const Comment = new Schema({
     uniqe: true,
   },
   postID: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
 });
