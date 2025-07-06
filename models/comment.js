@@ -15,11 +15,6 @@ const Comment = new Schema({
   profilePic: {
     type: String,
   },
-  commentID: {
-    type: String,
-    required: true,
-    uniqe: true,
-  },
   postID: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

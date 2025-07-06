@@ -117,7 +117,7 @@ async function deletePost(postID) {
     // Iterate through the comments and delete each one
     const comments = await Comment.find({ postID });
     for (const comment of comments) {
-      await Comment.findOneAndDelete({ commentID: comment.commentID });
+      await Comment.findOneAndDelete({ _id: comment._id });
     }
     //delete the post itself
     const deletedPost = await Post.findOneAndDelete({ _id: postID });
